@@ -8,7 +8,7 @@ font pango:monospace 8
 
 # Set-up xorg bullshit
 exec --no-startup-id "xrandr --output DVI-D-0 --mode 1366x768 --rate 59.79 --pos 1920x312 --output HDMI-0 --primary --mode 1920x1080 --rate 60.00 --pos 0x0 --verbose"
-exec --no-startup-id "xinput set-prop '9' 'libinput Accel Profile Enabled' 0 1 0"
+exec --no-startup-id "xinput set-prop '9' 'libinput Accel Profile Enabled' 0 1"
 
 # Initalize tablet drivers
 # exec --no-startup-id "systemctl --user enable opentabletdriver.service --now"
@@ -16,6 +16,8 @@ exec --no-startup-id "xinput set-prop '9' 'libinput Accel Profile Enabled' 0 1 0
 exec --no-startup-id dex-autostart --autostart --environment i3
 exec --no-startup-id xss-lock i3lock-fancy 
 exec --no-startup-id nm-applet
+exec --no-startup-id /usr/bin/lxqt-policykit-agent
+
 set $refresh_i3status killall -SIGUSR1 i3status
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
@@ -70,12 +72,6 @@ bindsym $mod+e layout toggle split
 # toggle tiling / floating
 bindsym $mod+f floating toggle
 
-# change focus between tiling / floating windows
-# bindsym $mod+space focus mode_toggle
-
-# focus the parent container
-# bindsym $mod+q focus parent
-
 # We use variables to avoid repeating the names in multiple places.
 set $ws1 "1"
 set $ws2 "2"
@@ -88,15 +84,16 @@ set $ws8 "8"
 set $ws9 "9"
 set $ws10 "10"
 
-
-assign [class = "kitty"] $ws4
+# assign [class = "kitty"] $ws4
 assign [class = "VSCode"] $ws5
 assign [class = "thorium"] $ws1
+assign [class = "firefox"] $ws1
 for_window [class="Spotify"] move to workspace $ws3 
 assign [class = "vesktop"] $ws2
+assign [class = "discord"] $ws2
 assign [class = "Thunar"] $ws6
 
-
+for_window [class="kitty"] floating enable
 
 # switch to workspace
 bindsym $mod+1 workspace number $ws1
@@ -159,7 +156,7 @@ bindsym $mod+r mode "resize"
 bar {
 	tray_output none
 	status_command ~/.local/bin/bumblebee-status \
-	-m playerctl memory bluetooth2 pasink time date system\
+	-m spotify memory bluetooth pasink time date system\
 	-p root.path=/ time.format="%H:%M" date.format="%a, %b %d %Y" \
 	-t moonlight-powerline 
 	  colors {
